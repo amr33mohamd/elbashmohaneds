@@ -15,6 +15,9 @@ import SectorsScreen from '../screens/SectorsScreen'
 import FreeNotesScreen from '../screens/FreeNotesScreen'
 import SingleNoteScreen from '../screens/SingleNoteScreen'
 import WelcomeScreen from '../screens/WelcomeScreen'
+import AddressScreen from '../screens/AddressScreen'
+import VideosScreen from '../screens/VideosScreen'
+
 const RootStackNavigator = StackNavigator(
   {
     WelcomeScreen: {screen: WelcomeScreen},
@@ -24,10 +27,12 @@ const RootStackNavigator = StackNavigator(
     ImagesScreen: {screen: ImagesScreen},
     BuyScreen: {screen: BuyScreen},
     ViewVideo: {screen: ViewVideo},
-
+    AddressScreen:{screen:AddressScreen},
     SearchScreen: {screen: SearchScreen},
     SectorsScreen: {screen: SectorsScreen},
     FreeNotesScreen: {screen: FreeNotesScreen},
+    VideosScreen: {screen: VideosScreen},
+
     SingleNoteScreen: {screen: SingleNoteScreen},
 
   },

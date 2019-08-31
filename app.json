@@ -1,13 +1,15 @@
 {
-
   "expo": {
     "name": "ElbashMohandes",
-    "scheme": "ElbashMohandes",
+    "scheme": "elbashmohandes",
     "description": "Selling Notes App.",
     "slug": "ElbashMohandes",
     "privacy": "public",
     "sdkVersion": "32.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "5.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -22,11 +24,13 @@
     },
     "android": {
       "package": "com.ElbashMohandes.Fletchers",
-      "permissions": [ "MANAGE_DOCUMENTS", "READ_EXTERNAL_STORAGE", "READ_INTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE" ],
+      "permissions": [
+        "MANAGE_DOCUMENTS",
+        "READ_EXTERNAL_STORAGE",
+        "READ_INTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "versionCode": 5
-    },
-
-
-
+    }
   }
 }

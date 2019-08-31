@@ -66,7 +66,7 @@ export default class SectorsScreen extends React.Component {
 
 
 	static navigationOptions = ({ navigation }) => ({
-		title:'Sectors',
+		title:'التخصصات',
 		headerTintColor: Colors.smoothGray,
 		fontFamily:'myfont',
 	headerStyle: {

@@ -65,7 +65,7 @@ export default class HomeScreen extends React.Component {
 
 
 	static navigationOptions = ({ navigation }) => ({
-		title:'subjects',
+		title:'المواد المتاحه',
 		headerTintColor: Colors.smoothGray,
 		fontFamily:'myfont',
 	headerStyle: {

@@ -10,18 +10,15 @@ import {
 	Button,
 	Modal,
 	Share,
+	Platform,
 	Linking
 } from 'react-native';
-import Expo, { Constants, WebBrowser } from 'expo';
 import SingleNoteBox from '../components/SingleNoteBox';
 import Colors from '../constants/Colors';
 import Server from '../constants/server';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../components/Header';
-import SingleSubjectBox from '../components/SingleSubjectBox';
-import { ListView,ImageBackground,Tile,Divider,Title,Subtitle,Caption } from '@shoutem/ui';
-import {View as View2} from 'react-native'
 
 var styles = StyleSheet.create({
 	box: {
@@ -67,27 +64,47 @@ var styles = StyleSheet.create({
 	}
 });
 
-export default class MyNotesScreen extends React.Component {
-	_handlePressButtonAsync = async (id) => {
-	    let result = await WebBrowser.openBrowserAsync(Server.dest + '/view-note?id='+id);
-	    this.setState({ result });
-	  };
+export default class VideosScreen extends React.Component {
 
  browse = ()=>{
 	 this.props.navigation.navigate('ImagesScreen',{key:this.state.CurentOpenedId});
 	 this.closeModal();
  }
- make_order = ()=>{
-	 this.props.navigation.navigate('BuyScreen',{key:this.state.CurentOpenedId});
-	 this.closeModal();
+
+ make_order = (type)=>{
+	 if(type == 6 || type == 5){
+		 this.props.navigation.navigate('AddressScreen',{key:this.state.CurentOpenedId,type});
+		 this.closeModal();
+
+	 }else {
+		 this.props.navigation.navigate('BuyScreen',{key:this.state.CurentOpenedId,type});
+		 this.closeModal();
+	 }
+ }
+ make_order2 = ()=>{
+	AsyncStorage.getItem('id').then((id)=>{
+		fetch(Server.dest + '/free-view-video?id='+this.state.CurentOpenedId+'&deviceid='+id).then((res)=>res.json()).then((supjects)=>{
+			this.props.navigation.navigate('Notes')
+						 });
+	})
+
+	this.closeModal();
  }
  static navigationOptions = ({ navigation }) => ({
-	 title:'MyNotes',
+	 title:'Notes',
 	 headerTintColor: Colors.smoothGray,
 	 fontFamily:'myfont',
  headerStyle: {
 	 backgroundColor: Colors.mainColor,
-	 marginTop:-25
+	 ...Platform.select({
+		 ios: {
+				marginTop:-8
+			},
+		 android:{
+			 marginTop:-25,
+		 }
+
+		}),
  },
  headerTitleStyle: {
 	 fontWeight: '300',
@@ -97,15 +114,13 @@ export default class MyNotesScreen extends React.Component {
  },
  });
 	componentDidMount() {
-		AsyncStorage.getItem('id').then((id)=>{
-			fetch(Server.dest + '/api/mynotes?id='+id).then((res)=>res.json()).then((supjects)=>{
-									this.setState({
-										doneFetches: 1,
-										Subjects: supjects
-									});
-								});
-		})
 
+    fetch(Server.dest + '/api/videos?sub_category='+this.props.navigation.state.params.key).then((res)=>res.json()).then((supjects)=>{
+								this.setState({
+									doneFetches: 1,
+									Subjects: supjects.videos
+								});
+							});
 	}
 
 
@@ -128,60 +143,32 @@ onClick() {
     ]
   })
 }
+openModal(item) {
+	this.setState({modalVisible:true,CurentOpenedId:item.id,CurentOpenedItem:item});
+}
 
-	openModal = (id) =>{
-    this.setState({modalVisible:true,currentOpenedNote:id});
-  }
+
 	closeModal() {
     this.setState({modalVisible:false});
   }
-	viewNote = (id)=>{
-		this.closeModal()
-		 this.props.navigation.navigate('SingleNoteScreen',{id:id.id,currentOpenedNote:id})
-	}
-	downNote = ()=>{
-		var pdf = this.state.currentOpenedNote.image.replace("-0.png",".pdf")
-		Linking.openURL(pdf);
-	}
 	constructor(props) {
 		super(props);
 		this.state = {
 			doneFetches: 0,
 			modalVisible: false,
-			currentOpenedNote:0,
-			result: null,
+			CurentOpenedId:0,
+			CurentOpenedItem:[],
 			Subjects: [
 
       ],
 
 		};
 	}
-	renderRow = (restaurant)=> {
-
-  return (
-		<TouchableOpacity
-			onPress={() => this.viewNote(restaurant)}
-			activeOpacity={0.7}
-		>
-		      <ImageBackground
-        styleName="large-banner"
-        source={{ uri: restaurant.image }}
-      >
-        <Tile >
-          <Caption styleName="sm-gutter-horizontal" style={{fontSize:27,color:'white',fontWeight:'bold'}}>{restaurant.name}</Caption>
-					<Subtitle styleName="sm-gutter-horizontal">{restaurant.description}</Subtitle>
-
-        </Tile>
-      </ImageBackground>
-      <Divider styleName="line" />
-    </TouchableOpacity>
-  );
-}
 
 	render() {
 		const { navigate } = this.props.navigation;
 		if (this.state.doneFetches == 0)
-			return <Text style={{textAlign:'center',justifyContent:'center',alignSelf:'center',marginTop:'50%'}}>You have not notes yet</Text>;
+			return <LoadingIndicator size="large" color="#B6E3C6" />;
 
 			if(this.state.Subjects.length != 0){
 		return (
@@ -189,43 +176,37 @@ onClick() {
 
 			<View>
 			<Modal
-							visible={this.state.modalVisible}
-							animationType={'slide'}
-							onRequestClose={() => this.closeModal()}
-					>
-						<View2 style={styles.modalContainer}>
-							<View2 style={styles.innerContainer}>
-								<Text style={{fontFamily:'myfont',fontSize:25}}>Confirm buying the note</Text>
-								<View2 style={styles.buttons}>
+              visible={this.state.modalVisible}
+              animationType={'slide'}
+              onRequestClose={() => this.closeModal()}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.innerContainer}>
+                <Text style={{fontFamily:'myfont',fontSize:25}}>Confirm buying the note</Text>
+                <View style={styles.buttons}>
+
+                <TouchableOpacity
+                    onPress={() => this.make_order('7')}
+                >
+                <Text   style={styles.button}>Get Video Now</Text>
+                </TouchableOpacity>
+
 
 								<TouchableOpacity
-										onPress={() => this.viewNote()}
-								>
-								<Text   style={styles.button}>View Note</Text>
-								</TouchableOpacity>
+                    onPress={() => this.onClick()}
+                >
+                <Text   style={styles.button}>Share</Text>
+                </TouchableOpacity>
 								<TouchableOpacity
-										onPress={() => this.downNote()}
-								>
-								<Text   style={styles.button}>Download note</Text>
-								</TouchableOpacity>
-								<TouchableOpacity
-										onPress={() => this.closeModal()}
-								>
-								<Text   style={styles.button}>Close</Text>
-								</TouchableOpacity>
+                    onPress={() => this.closeModal()}
+                >
+                <Text   style={styles.button}>Close</Text>
+                </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
 
-								</View2>
-							</View2>
-						</View2>
-					</Modal>
-
-			<ListView
-			        data={this.state.Subjects}
-			        renderRow={this.renderRow}
-			      />
-
-{
-	/*
 				<FlatList
 					automaticallyAdjustContentInsets={false}
 					style={{ backgroundColor: 'white' }}
@@ -238,29 +219,25 @@ onClick() {
 
 					renderItem={({ item }) => (
 						<TouchableOpacity
-							onPress={() => this.props.navigation.navigate('SingleNoteScreen',{id:item.id})}
+							onPress={() => this.openModal(item)}
 							activeOpacity={0.7}
 						>
 							<SingleNoteBox
 								name={item.name}
                 price={item.price}
-                image={item.image}
-                desc={item.description}
+								image='https://www.promoteproductions.com/wp-content/uploads/2018/03/video-1364122_960_720-1.png'
+                desc={item.name}
 							/>
 						</TouchableOpacity>
 					)}
 				/>
-				*/
-			}
-				<Text>{this.state.result && JSON.stringify(this.state.result)}</Text>
-
 			</View>
 		);
 	}
 
 else{
 	return(
-		<Text style={{textAlign:'center',justifyContent:'center',alignItems:'center',fontSize:14,fontFamily:'myfont',marginTop:240}}>You still did not bought any notes yet</Text>
+		<Text style={{textAlign:'center',justifyContent:'center',alignItems:'center',fontSize:14,fontFamily:'myfont',marginTop:240}}>No Notes here check other categories</Text>
 	)
 }
 }
