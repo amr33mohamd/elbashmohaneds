@@ -43,7 +43,7 @@ export default class Header extends React.Component {
 						{...this.props}
 						style={styles.input}
 						placeholderTextColor="#999999"
-						placeholder="Search for note ...."
+						placeholder="Search for note or video ...."
 						returnKeyType={'search'}
 						underlineColorAndroid="transparent"
 						onChangeText={text => this.setState({ searchText: text })}
@@ -81,7 +81,7 @@ var styles = StyleSheet.create({
 	},
 	box: {
 		height: 45,
-		backgroundColor: Colors.smoothGray,
+		backgroundColor: 'white',
 		borderRadius: 9,
 		flexDirection: 'row',
 		flexWrap: 'wrap',

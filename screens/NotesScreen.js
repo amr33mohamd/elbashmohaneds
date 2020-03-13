@@ -8,7 +8,7 @@ import {
 	Modal,
 	Share,
 	Platform,
-	ScrollView
+	ScrollView,
 } from 'react-native';
 import SingleNoteBox from '../components/SingleNoteBox';
 import Colors from '../constants/Colors';
@@ -19,6 +19,8 @@ import Header from '../components/Header';
 import SingleSubjectBox from '../components/SingleSubjectBox';
 import { ListView,TextInput,ImageBackground,Tile,Divider,Title,Subtitle,Caption,Icon,Button,Image,Row,View } from '@shoutem/ui';
 import {View as View2} from 'react-native'
+import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
+
 var styles = StyleSheet.create({
 	box: {
 		height: 45,
@@ -94,7 +96,7 @@ export default class NotesScreen extends React.Component {
 	 }
  }
  static navigationOptions = ({ navigation }) => ({
-	 title:'Notes',
+	 title:'المذكرات',
 	 headerTintColor: Colors.smoothGray,
 	 fontFamily:'myfont',
  headerStyle: {
@@ -111,13 +113,102 @@ export default class NotesScreen extends React.Component {
  },
  headerTitleStyle: {
 	 fontWeight: '300',
-	 color: '#ffffff',
+	 color: 'black',
 	 fontFamily: 'myfont',
-	 fontSize: 16
+	 fontSize: 18
  },
 
  });
+ browsev = ()=>{
+	 this.props.navigation.navigate('ImagesScreen',{key:this.state.CurentOpenedIdv});
+	 this.closeModal();
+ }
+
+ make_orderv = (type)=>{
+	 if(type == 6 || type == 5){
+		 this.props.navigation.navigate('AddressScreen',{key:this.state.CurentOpenedIdv,type});
+		 this.closeModal();
+
+	 }else {
+		 this.props.navigation.navigate('BuyScreen',{key:this.state.CurentOpenedIdv,type});
+		 this.closeModal();
+	 }
+ }
+ make_order2v = ()=>{
+	AsyncStorage.getItem('id').then((id)=>{
+		fetch(Server.dest + '/free-view-video?id='+this.state.CurentOpenedIdv+'&deviceid='+id).then((res)=>res.json()).then((supjects)=>{
+			this.props.navigation.navigate('Notes')
+						 });
+	})
+
+	this.closeModal();
+ }
+ onClickv() {
+   Share.share({
+     message: 'Fastrack : You can buy the note from here : '+'http://fastrack.xyz:5050'+'/buy-first?id='+this.props.navigation.state.params.key+' and for more notes download Fastrack : https://play.google.com/store/apps/details?id=com.Fastrack.GarashSoftwareHouse',
+     url: 'https://play.google.com/store/apps/details?id=com.Fastrack.GarashSoftwareHouse',
+     title: 'https://play.google.com/store/apps/details?id=com.Fastrack.GarashSoftwareHouse'
+   }, {
+     // Android only:
+     dialogTitle: 'Share Fastrack',
+     // iOS only:
+     excludedActivityTypes: [
+       'com.apple.UIKit.activity.PostToTwitter'
+     ]
+   })
+ }
+ openModalv(item) {
+ 	this.setState({modalVisiblev:true,CurentOpenedIdv:item.id,CurentOpenedItemv:item});
+ }
+
+ openModalf(item) {
+  this.setState({modalVisiblef:true,CurentOpenedIdf:item.id,CurentOpenedItemf:item});
+ }
+ 	closeModalv() {
+     this.setState({modalVisiblev:false});
+   }
+	 closeModalf() {
+      this.setState({modalVisiblef:false});
+    }
+
+
+	 browsef = ()=>{
+		 this.props.navigation.navigate('ImagesScreen',{key:this.state.CurentOpenedIdf});
+		 this.closeModal();
+	 }
+
+	 make_orderf = ()=>{
+		 AsyncStorage.getItem('id').then((id)=>{
+			 fetch(Server.dest + '/free-view-note?id='+this.state.CurentOpenedIdf+'&deviceid='+id).then((res)=>res.json()).then((supjects)=>{
+				 this.props.navigation.navigate('Notes')
+								});
+		 })
+
+		 this.closeModal();
+	 }
+	 make_order2f = ()=>{
+		AsyncStorage.getItem('id').then((id)=>{
+			fetch(Server.dest + '/free-view-video?id='+this.state.CurentOpenedIdf+'&deviceid='+id).then((res)=>res.json()).then((supjects)=>{
+				this.props.navigation.navigate('Notes')
+							 });
+		})
+
+		this.closeModal();
+	 }
+
 	componentDidMount() {
+		fetch(Server.dest + '/api/freenotes?id='+this.props.navigation.state.params.key).then((res)=>res.json()).then((supjects)=>{
+								this.setState({
+									doneFetches: 1,
+									Subjectsf: supjects
+								});
+							});
+		fetch(Server.dest + '/api/videos?sub_category='+this.props.navigation.state.params.key).then((res)=>res.json()).then((supjects)=>{
+								this.setState({
+									doneFetchesv: 1,
+									Subjectsv: supjects.videos
+								});
+							});
     fetch(Server.dest + '/api/notes?id='+this.props.navigation.state.params.key).then((res)=>res.json()).then((supjects)=>{
 								this.setState({
 									doneFetches: 1,
@@ -175,6 +266,21 @@ onClick() {
 			Subjects: [
 
       ],
+			doneFetchesv: 0,
+			modalVisiblev: false,
+			CurentOpenedIdv:0,
+			CurentOpenedItemv:[],
+			Subjectsv: [
+
+			],
+			doneFetchesf: 0,
+			modalVisiblef: false,
+			CurentOpenedIdf:0,
+			CurentOpenedItemf:[],
+			Subjectsf: [
+
+      ],
+
 
 		};
 
@@ -210,6 +316,48 @@ coupon =() =>{
 
 			<View>
 			<Modal
+              visible={this.state.modalVisiblef}
+              animationType={'slide'}
+              onRequestClose={() => this.closeModalf()}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.innerContainer}>
+                <Text style={{fontFamily:'myfont',fontSize:25}}>Confirm buying the note</Text>
+                <View style={styles.buttons}>
+
+                <TouchableOpacity
+                    onPress={() => this.make_orderf()}
+                >
+                <Text   style={styles.button}>Get Note Now</Text>
+                </TouchableOpacity>
+
+								{
+
+
+								(this.state.CurentOpenedItem.video != 0)?
+								<TouchableOpacity
+										onPress={() => this.make_order2f()}
+								>
+								<Text   style={styles.button}>Get Video Now</Text>
+								</TouchableOpacity>
+
+								:null
+								}
+								<TouchableOpacity
+                    onPress={() => this.onClickf()}
+                >
+                <Text   style={styles.button}>Share</Text>
+                </TouchableOpacity>
+								<TouchableOpacity
+                    onPress={() => this.closeModalf()}
+                >
+                <Text   style={styles.button}>Close</Text>
+                </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+			<Modal
               visible={this.state.modalVisible}
               animationType={'slide'}
               onRequestClose={() => this.closeModal()}
@@ -239,7 +387,8 @@ coupon =() =>{
 								<TouchableOpacity
                     onPress={() => this.make_order('1')}
                 >
-                <Text   style={styles.button}>تصفح المذكرة كاملة بدون طباعة - {this.state.CurentOpenedItem.price} kwd </Text>
+                <Text   style={styles.button}>تصفح المذكرة كاملة بدون طباعة {"\n"}
+								 {this.state.CurentOpenedItem.price} KD </Text>
                 </TouchableOpacity>
 								{
 								// <TouchableOpacity
@@ -262,7 +411,7 @@ coupon =() =>{
 									<TouchableOpacity
 											onPress={() => this.make_order('2')}
 									>
-									<Text   style={styles.button}>مشاهده الفيديو فقط - {this.state.CurentOpenedItem.video_price} kwd</Text>
+									<Text   style={styles.button}>مشاهده الفيديو فقط  {"\n"} {this.state.CurentOpenedItem.video_price} KD</Text>
 									</TouchableOpacity>
 
 									{
@@ -276,7 +425,7 @@ coupon =() =>{
 									<TouchableOpacity
 											onPress={() => this.make_order('3')}
 									>
-									<Text   style={styles.button}>شراء الفيديو مع المذكره بدون طباعه - {this.state.CurentOpenedItem.both} kwd</Text>
+									<Text   style={styles.button}>شراء الفيديو مع المذكره بدون طباعه {"\n"} {this.state.CurentOpenedItem.both} KD</Text>
 									</TouchableOpacity>
 
 									<Text style={{fontFamily:'myfont',fontSize:25}}>Have a coupon</Text>
@@ -304,6 +453,8 @@ coupon =() =>{
 									null
 									:null
 								}
+
+								<Text style={{width:250,textAlign:'center',padding:10}}>يرجي مراجعة المبلغ في الصفحة القادمة قبل تأكيد الدفع لأنه يوجد عمولة لشركة الدفع اونلاين ، وشكرا</Text>
 								<TouchableOpacity
                     onPress={() => this.onClick()}
                 >
@@ -323,111 +474,176 @@ coupon =() =>{
 
           </Modal>
 
+
+
+					<Modal
+									visible={this.state.modalVisiblev}
+									animationType={'slide'}
+									onRequestClose={() => this.closeModalv()}
+							>
+								<View style={styles.modalContainer}>
+									<View style={styles.innerContainer}>
+										<Text style={{fontFamily:'myfont',fontSize:25}}>Confirm buying the note</Text>
+										<View style={styles.buttons}>
+
+										<TouchableOpacity
+												onPress={() => this.make_orderv('7')}
+										>
+										<Text   style={styles.button}>Get Video Now</Text>
+										</TouchableOpacity>
+
+
+										<TouchableOpacity
+												onPress={() => this.onClickv()}
+										>
+										<Text   style={styles.button}>Share</Text>
+										</TouchableOpacity>
+										<TouchableOpacity
+												onPress={() => this.closeModalv()}
+										>
+										<Text   style={styles.button}>Close</Text>
+										</TouchableOpacity>
+										</View>
+									</View>
+								</View>
+							</Modal>
+
+							<ScrollView>
+							<SingleSubjectBox
+								name={this.props.navigation.state.params.name}
+							/>
+					<Collapse style={{marginLeft:20}}>
+						<CollapseHeader>
+						<View>
+									<SingleSubjectBox
+										name="Free Notes"
+									/>
+									</View>
+					    </CollapseHeader>
+					    <CollapseBody>
+							<FlatList
+								automaticallyAdjustContentInsets={false}
+								style={{ backgroundColor: 'white' }}
+								removeClippedSubviews={false}
+								ItemSeparatorComponent={() => (
+									<View style={{ height: 5,backgroundColor: 'white'  }} />
+								)}
+								data={this.state.Subjectsf}
+								keyExtractor={this._keyExtractor}
+ListEmptyComponent={()=>(
+	<View style={{height:40}}>
+	<Text style={{fontSize:20,textAlign:'center'}}>No free Notes</Text>
+	</View>
+)}
+								renderItem={({ item }) => (
+									<TouchableOpacity
+										onPress={() => this.openModalf(item)}
+										activeOpacity={0.7}
+									>
+										<SingleNoteBox
+											name={item.name}
+											price={item.price}
+											image={item.image}
+											desc={item.description}
+										/>
+									</TouchableOpacity>
+								)}
+							/>
+							</CollapseBody>
+					</Collapse>
+
+									<Collapse style={{marginLeft:20}}>
+    <CollapseHeader>
+      <View>
+
+									<SingleSubjectBox
+										name="Videos"
+									/>
+									</View>
+									    </CollapseHeader>
+									    <CollapseBody>
+											<FlatList
+												automaticallyAdjustContentInsets={false}
+												style={{ backgroundColor: 'white' }}
+												removeClippedSubviews={false}
+												ItemSeparatorComponent={() => (
+													<View style={{ height: 5,backgroundColor: 'white'  }} />
+												)}
+												data={this.state.Subjectsv}
+												keyExtractor={this._keyExtractor}
+												ListEmptyComponent={()=>(
+													<View style={{height:40}}>
+													<Text style={{fontSize:20,textAlign:'center'}}>No  Videos</Text>
+													</View>
+												)}
+												renderItem={({ item }) => (
+													<TouchableOpacity
+														onPress={() => this.openModalv(item)}
+														activeOpacity={0.7}
+													>
+														<SingleNoteBox
+															name={item.name}
+															price={item.price}
+															image='https://www.promoteproductions.com/wp-content/uploads/2018/03/video-1364122_960_720-1.png'
+															desc={item.name}
+														/>
+													</TouchableOpacity>
+												)}
+											/>
+									    </CollapseBody>
+									</Collapse>
+
+
+									<Collapse style={{marginLeft:20}}>
+    <CollapseHeader>
+      <View>
+			<SingleSubjectBox
+				name="Notes"
+			/>
+			  </View>
+    </CollapseHeader>
+    <CollapseBody>
+		<FlatList
+			automaticallyAdjustContentInsets={false}
+			style={{ backgroundColor: 'white' }}
+			removeClippedSubviews={false}
+			ItemSeparatorComponent={() => (
+				<View style={{ height: 5,backgroundColor: 'white' }} />
+			)}
+			data={this.state.Subjects}
+			keyExtractor={this._keyExtractor}
+			ListHeaderComponent = {()=>(
+
 				<FlatList
 					automaticallyAdjustContentInsets={false}
 					style={{ backgroundColor: 'white' }}
 					removeClippedSubviews={false}
 					ItemSeparatorComponent={() => (
-						<View style={{ height: 5,backgroundColor: Colors.smoothGray  }} />
+						<View style={{ height: 5,backgroundColor: 'white'  }} />
 					)}
-					data={this.state.Subjects}
-          keyExtractor={this._keyExtractor}
-					ListHeaderComponent = {()=>(
+					data={this.state.midterms}
+					keyExtractor={this._keyExtractor}
 
-						<FlatList
-							automaticallyAdjustContentInsets={false}
-							style={{ backgroundColor: 'white' }}
-							removeClippedSubviews={false}
-							ItemSeparatorComponent={() => (
-								<View style={{ height: 5,backgroundColor: Colors.smoothGray  }} />
-							)}
-							data={this.state.midterms}
-							keyExtractor={this._keyExtractor}
-							ListHeaderComponent = {()=>(
-								<View>
-								<TouchableOpacity
-									onPress={() => navigate('FreeNotesScreen', { key: this.props.navigation.state.params.key })}
-									activeOpacity={0.7}
-									style={{
-											borderBottomWidth:5,
-											borderBottomColor:Colors.smoothGray
-									}}
-								>
-
-									<SingleSubjectBox
-										name="Free Notes"
-									/>
-
-								</TouchableOpacity>
-								<TouchableOpacity
-									onPress={() => navigate('VideosScreen', { key: this.props.navigation.state.params.key })}
-									activeOpacity={0.7}
-									style={{
-											borderBottomWidth:5,
-											borderBottomColor:Colors.smoothGray
-									}}
-								>
-
-									<SingleSubjectBox
-										name="Videos"
-									/>
-
-								</TouchableOpacity>
-
-								</View>
-							)}
-							renderItem={({ item }) => (
-								<TouchableOpacity
-									onPress={()=>{
-										this.props.navigation.navigate('AddressScreen',{key:item.id,type:4})
-
-									}}
-									activeOpacity={0.7}
-								>
-
-								<Row>
-
-								<Image
-				styleName="small rounded-corners"
-				source={{ uri: 'https://elgarblog.files.wordpress.com/2014/01/education-books.jpg' }}
-			/>
-			<View styleName="vertical stretch space-between">
-				<Subtitle style={{fontSize:17}}> {item.name}  </Subtitle>
-<Subtitle style={{fontSize:17}}>{item.descc}</Subtitle>
-				<View styleName="horizontal">
-					<Subtitle styleName="md-gutter-right">{item.price} kwd</Subtitle>
-				</View>
-			</View>
-			<Button styleName="right-icon"><Icon name="add-to-cart" /></Button>
-			</Row>
-
-								</TouchableOpacity>
-							)}
-						/>
-					)}
 					renderItem={({ item }) => (
 						<TouchableOpacity
-							onPress={() => this.openModal(item)}
+							onPress={()=>{
+								this.props.navigation.navigate('AddressScreen',{key:item.id,type:4})
+
+							}}
 							activeOpacity={0.7}
 						>
-						{
-							// <SingleNoteBox
-							// 	name={item.name}
-              //   price={item.price}
-              //   image={item.image}
-              //   desc={item.description}
-							// />
-						}
+
 						<Row>
 
 						<Image
 		styleName="small rounded-corners"
-		source={{ uri: item.image }}
+		source={{ uri: 'https://elgarblog.files.wordpress.com/2014/01/education-books.jpg' }}
 	/>
 	<View styleName="vertical stretch space-between">
-		<Subtitle style={{fontSize:17}}>{item.name} </Subtitle>
-<Subtitle style={{fontSize:17}}> {item.description}</Subtitle>
+		<Subtitle style={{fontSize:17}}> {item.name}  </Subtitle>
+<Subtitle style={{fontSize:17}}>{item.descc}</Subtitle>
 		<View styleName="horizontal">
+			<Subtitle styleName="md-gutter-right">{item.price} kwd</Subtitle>
 		</View>
 	</View>
 	<Button styleName="right-icon"><Icon name="add-to-cart" /></Button>
@@ -436,6 +652,45 @@ coupon =() =>{
 						</TouchableOpacity>
 					)}
 				/>
+			)}
+			renderItem={({ item }) => (
+				<TouchableOpacity
+					onPress={() => this.openModal(item)}
+					activeOpacity={0.7}
+				>
+				{
+					// <SingleNoteBox
+					// 	name={item.name}
+					//   price={item.price}
+					//   image={item.image}
+					//   desc={item.description}
+					// />
+				}
+				<Row>
+
+				<Image
+styleName="small rounded-corners"
+source={{ uri: item.image }}
+/>
+<View styleName="vertical stretch space-between">
+<Subtitle style={{fontSize:17}}>{item.name} </Subtitle>
+<Subtitle style={{fontSize:17}}> {item.description}</Subtitle>
+<View styleName="horizontal">
+</View>
+</View>
+<Button styleName="right-icon"><Icon name="add-to-cart" /></Button>
+</Row>
+
+				</TouchableOpacity>
+			)}
+		/>
+
+    </CollapseBody>
+</Collapse>
+
+</ScrollView>
+
+
 			</View>
 		);
 	}

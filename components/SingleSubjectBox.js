@@ -15,13 +15,15 @@ export default class SingleSubjectBox extends Component {
     var styles = StyleSheet.create({
     	text:{
         marginLeft:10,
-        flex:.9
+        flex:.9,
+        flexDirection:'row'
       },
       box:{
-        flex:1,
         flexDirection:'row',
         height:60,
-        alignItems:'center'
+        alignItems:'center',
+        backgroundColor:'white',
+        marginVertical:5
       },
       icon:{
         justifyContent: 'flex-start',
@@ -36,7 +38,10 @@ export default class SingleSubjectBox extends Component {
     <View style={styles.text}>
       <Text style={{fontSize:18,color:Colors.mainColor,
       fontFamily:'myfont',
-      fontWeight:'bold'}}>{this.props.name}</Text>
+      fontWeight:'bold'}}>{this.props.name.split("/")[0]}</Text>
+      <Text style={{fontSize:18,color:'black',
+      fontFamily:'myfont',
+      fontWeight:'bold'}}>{this.props.name.split("/")[1]}</Text>
     </View>
     <View style={styles.icon}>
     <Ionicons

@@ -167,9 +167,9 @@ onClick() {
         styleName="large-banner"
         source={{ uri: restaurant.image }}
       >
-        <Tile >
-          <Caption styleName="sm-gutter-horizontal" style={{fontSize:27,color:'white',fontWeight:'bold'}}>{restaurant.name}</Caption>
-					<Subtitle styleName="sm-gutter-horizontal">{restaurant.description}</Subtitle>
+        <Tile style={{padding:10}} >
+          <Caption styleName="sm-gutter-horizontal" style={{fontSize:30,color:'white',fontWeight:'bold',padding:10}}>{restaurant.name}</Caption>
+					<Subtitle styleName="sm-gutter-horizontal" style={{fontWeight:'bold',fontSize:25}}>{restaurant.description}</Subtitle>
 
         </Tile>
       </ImageBackground>

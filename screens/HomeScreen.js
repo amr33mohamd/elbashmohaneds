@@ -116,10 +116,11 @@ export default class HomeScreen extends React.Component {
 				>
 		      <ImageBackground
         styleName="large-banner"
+				style={{height:200}}
         source={{ uri: restaurant.image }}
       >
         <Tile >
-          <Caption styleName="sm-gutter-horizontal" style={{fontSize:27,color:'white',fontWeight:'bold'}}>{restaurant.name} </Caption>
+          <Caption styleName="sm-gutter-horizontal" style={{fontSize:26,color:'white',fontWeight:'bold',height:40}}>{restaurant.name} </Caption>
         </Tile>
       </ImageBackground>
       <Divider styleName="line" />

@@ -66,7 +66,7 @@ export default class HomeScreen extends React.Component {
 
 	static navigationOptions = ({ navigation }) => ({
 		title:'المواد المتاحه',
-		headerTintColor: Colors.smoothGray,
+		headerTintColor: 'black',
 		fontFamily:'myfont',
 	headerStyle: {
 		...Platform.select({
@@ -83,9 +83,9 @@ export default class HomeScreen extends React.Component {
 	},
 	headerTitleStyle: {
 		fontWeight: '300',
-		color: '#ffffff',
+		color: 'black',
 		fontFamily: 'myfont',
-		fontSize: 16
+		fontSize: 18
 	},
 	});
 	componentDidMount() {
@@ -127,13 +127,13 @@ export default class HomeScreen extends React.Component {
 					style={{ backgroundColor: 'white' }}
 					removeClippedSubviews={false}
 					ItemSeparatorComponent={() => (
-						<View style={{ height: 5,backgroundColor: Colors.smoothGray  }} />
+						<View style={{ height: 5,backgroundColor: 'white'  }} />
 					)}
 					data={this.state.Subjects}
 
 					renderItem={({ item }) => (
 						<TouchableOpacity
-							onPress={() => navigate('NotesScreen', { key: item.id })}
+							onPress={() => navigate('NotesScreen', { key: item.id,name:item.name })}
 							activeOpacity={0.7}
 						>
 							<SingleSubjectBox

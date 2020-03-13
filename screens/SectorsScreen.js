@@ -67,10 +67,13 @@ export default class SectorsScreen extends React.Component {
 
 	static navigationOptions = ({ navigation }) => ({
 		title:'التخصصات',
-		headerTintColor: Colors.smoothGray,
+		headerTintColor: 'black',
+		color:'black',
+
 		fontFamily:'myfont',
 	headerStyle: {
 		backgroundColor: Colors.mainColor,
+		color:'black',
 		...Platform.select({
       ios: {
         marginTop:-8
@@ -82,9 +85,10 @@ export default class SectorsScreen extends React.Component {
 	},
 	headerTitleStyle: {
 		fontWeight: '300',
-		color: '#ffffff',
+
+		color: 'black',
 		fontFamily: 'myfont',
-		fontSize: 16
+		fontSize: 18
 	},
 	});
 	componentDidMount() {
@@ -126,7 +130,7 @@ export default class SectorsScreen extends React.Component {
 					style={{ backgroundColor: 'white' }}
 					removeClippedSubviews={false}
 					ItemSeparatorComponent={() => (
-						<View style={{ height: 5,backgroundColor: Colors.smoothGray  }} />
+						<View style={{ height: 5,backgroundColor: 'white'  }} />
 					)}
 					data={this.state.Subjects}
 

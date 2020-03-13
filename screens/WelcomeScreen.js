@@ -27,7 +27,7 @@ export default class WelcomeScreen extends React.Component {
 
 
  static navigationOptions = ({ navigation }) => ({
-	 title:'Welcome In ElbashMohandes',
+	 title:'Welcome',
 	 headerTintColor: Colors.smoothGray,
 	 fontFamily:'myfont',
  headerStyle: {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
 		height: 22,
 		fontFamily: 'myfont',
 		marginTop: 5,
-		backgroundColor: 'transparent',
+		backgroundColor: 'white',
 		fontSize: 15,
 		alignItems: 'center',
 		marginRight: 7,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
 	},
 	box: {
 		height: 45,
-		backgroundColor: Colors.smoothGray,
+		backgroundColor: 'white',
 		borderRadius: 9,
 		flexDirection: 'row',
 		flexWrap: 'wrap',

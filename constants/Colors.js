@@ -1,6 +1,6 @@
 const tintColor = '#000000';
-const secondCol = '#451316';
-const secondColFaded = '#449cd0';
+const secondCol = '#F6941E';
+const secondColFaded = '#F6941E';
 
 export default {
   tintColor,
@@ -13,8 +13,8 @@ export default {
   warningText: '#666804',
   noticeBackground: tintColor,
   noticeText: '#fff',
-  mainColor: '#218eca',
+  mainColor: '#F6941E',
   fadedMainColor: '#449cd0',
   secondaryColor: '#15263f',
-  smoothGray: '#F2F3F5'
+  smoothGray: 'black'
 };
